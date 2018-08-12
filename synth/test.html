@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>GUI Sandbox</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Abel');
+            svg {
+                width: 75%;
+            }
+            text {
+                font-family: "Abel";
+                font-size: 15px;
+                pointer-events: none;
+            }
+            text::selection {
+                background: none;
+            }
+            .title {
+                font-size: 30px;
+            }
+            
+            .thing:hover {
+                transform: translate(140px, 105px) scale(2) translate(-140px, -105px);
+                transform-origin: 50% 50%;
+                transition: 1s;
+            }
+        </style>
+        <script src="../../tones/build/tones.js"></script>
+        <script src="svg.js"></script>
+        <script src="../lactose/lactose.js"></script>
+    </head>
+
+    <body>
+        <svg viewBox="0 0 750 500" xmlns="http://www.w3.org/2000/svg" id="svg" draggable="true" ondragstart="stop(event)"></svg>
+        
+        <svg width="50" height="500" id="bar"></svg>
+        
+        <script src="synth.js"></script>
+        
+        <script>
+            let synth = new Synth(document.getElementById('svg'))
+            synth.build();
+            
+            function stop(event) {
+                event.preventDefault();
+            }
+        </script>
+        
+        <script src="../gui/inst.js"></script>
+    </body>
+</html>
