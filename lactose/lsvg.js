@@ -48,6 +48,15 @@
         l1.style.stroke = c;
         return l1;
     }
+    
+    function foreignObject(x, y, w, h) {
+        let fo = document.createElementNS(url, 'foreignObject');
+        fo.style.x = x;
+        fo.style.y = y;
+        fo.style.width = w;
+        fo.style.height = h;
+        return fo;
+    }
 
     function g() {
         return document.createElementNS(url, 'g');
@@ -58,6 +67,7 @@
     exports.rect = rect;
     exports.text = text;
     exports.line = line;
+    exports.foreignObject = foreignObject;
     exports.g = g;
     
 })));

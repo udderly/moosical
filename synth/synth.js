@@ -1,5 +1,3 @@
-console.log(LACTOSE);
-
 class Synth {
     constructor(s) {
         this.svg = s;
@@ -42,11 +40,9 @@ class Synth {
     }
 
     build(s) {
-        let svg = this.svg;
+        let container = LSVG.g();
         
-        let container = document.createElementNS(LSVG.url, 'g');
-        
-        let frame = document.createElementNS(LSVG.url, 'g');
+        let frame = LSVG.g();
         let r1 = LSVG.rect(0, 49, 750, 1, '#ccc');
         let r2 = LSVG.rect(0, 0, 750, 500, '#000');
         r2.style.fillOpacity = 0;
@@ -58,8 +54,8 @@ class Synth {
         frame.appendChild(r2);
         frame.appendChild(t1);
         
-        svg.appendChild(frame);
-        svg.appendChild(container);
+        this.svg.appendChild(frame);
+        this.svg.appendChild(container);
         
         this.addOsc(this.elements.osc1, 0, 0, 1, container);
         this.addOsc(this.elements.osc2, 0, 200, 2, container);
@@ -95,15 +91,15 @@ class Synth {
 
         /*let wavr = new Radio();
 
-        let wavb1 = new Button(570, 200, 20, false, '#903', svg);
-        let wavb2 = new Button(570, 250, 20, false, '#903', svg);
-        let wavb3 = new Button(570, 300, 20, true, '#903', svg);
-        let wavb4 = new Button(570, 350, 20, false, '#903', svg);
+        let wavb1 = new Button(570, 200, 20, false, '#903', this.svg);
+        let wavb2 = new Button(570, 250, 20, false, '#903', this.svg);
+        let wavb3 = new Button(570, 300, 20, true, '#903', this.svg);
+        let wavb4 = new Button(570, 350, 20, false, '#903', this.svg);
 
-        let wavt1 = new LACTOSE.Text(590, 205, 'left', 'SINE', '#333', svg);
-        let wavt2 = new LACTOSE.Text(590, 255, 'left', 'SQUARE', '#333', svg);
-        let wavt3 = new LACTOSE.Text(590, 305, 'left', 'SAW', '#333', svg);
-        let wavt4 = new LACTOSE.Text(590, 355, 'left', 'TRIANGLE', '#333', svg);
+        let wavt1 = new LACTOSE.Text(590, 205, 'left', 'SINE', '#333', this.svg);
+        let wavt2 = new LACTOSE.Text(590, 255, 'left', 'SQUARE', '#333', this.svg);
+        let wavt3 = new LACTOSE.Text(590, 305, 'left', 'SAW', '#333', this.svg);
+        let wavt4 = new LACTOSE.Text(590, 355, 'left', 'TRIANGLE', '#333', this.svg);
 
         wavr.add(wavb1);
         wavr.add(wavb2);
@@ -117,14 +113,14 @@ class Synth {
         scl.fil.o = new LACTOSE.Open(20, 480, 20, '#903', container);
         scl.fil.t = new LACTOSE.Text(40, 485, 'left', 'LOAD .SCL', '#333', container);
 
-        /*let resk = new LACTOSE.Knob(650, 100, 50, 0.6, '#c90', svg);
-        let rest = new LACTOSE.Text(650, 150, 'middle', 'FREQ', '#333', svg);
-        let resi = new LACTOSE.Text(650, 105, 'middle', '3.1', '#c90', svg);
+        /*let resk = new LACTOSE.Knob(650, 100, 50, 0.6, '#c90', this.svg);
+        let rest = new LACTOSE.Text(650, 150, 'middle', 'FREQ', '#333', this.svg);
+        let resi = new LACTOSE.Text(650, 105, 'middle', '3.1', '#c90', this.svg);
 
         //stuff
 
 
 
-        let t = new Graph(700, 300, [400, 200], [], '#333', svg);*/
+        let t = new Graph(700, 300, [400, 200], [], '#333', this.svg);*/
     }
 }
