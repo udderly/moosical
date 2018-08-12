@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <title>Window Tests</title>
         
+        <link rel="icon" href="../logo.png">
+        
         <style>
             @import url('https://fonts.googleapis.com/css?family=Abel');
             @import url('https://fonts.googleapis.com/css?family=Material+Icons');
@@ -77,6 +79,8 @@
         <script src="windows.js"></script>
         <script>
             let win = new Window(document.getElementById('svg'), {
+                x: 100,
+                y: 100,
                 width: 500,
                 height: 400
             });

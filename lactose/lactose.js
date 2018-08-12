@@ -88,13 +88,11 @@
                 self.old = self.v;
 
                 document.onmousemove = function(event) {
-                    if (event.clientX > 0 && event.clientY > 0) { 
-                        let result = 1000 * (self.sy - event.clientY) / (self.parent.clientWidth * self.s) / 4 + self.old;
+                    let result = 1000 * (self.sy - event.clientY) / (self.parent.clientWidth * self.s) / 4 + self.old;
 
-                        result = result < 0 ? 0 : result > 1 ? 1 : result;
-                        self.v = result;
-                        self.update();
-                    }
+                    result = result < 0 ? 0 : result > 1 ? 1 : result;
+                    self.v = result;
+                    self.update();
                 };
 
                 document.onmouseup = function() {
@@ -144,13 +142,11 @@
                 self.old = self.v;
 
                 document.onmousemove = function(event) {
-                    if (event.clientX > 0 && event.clientY > 0) {
-                        let result = 1000 * (self.sy - event.clientY) / (self.parent.clientWidth * self.s) + self.old;
+                    let result = 1000 * (self.sy - event.clientY) / (self.parent.clientWidth * self.s) + self.old;
 
-                        result = result < 0 ? 0 : result > 1 ? 1 : result;
-                        self.v = result;
-                        self.update();
-                    }
+                    result = result < 0 ? 0 : result > 1 ? 1 : result;
+                    self.v = result;
+                    self.update();
                 };
 
                 document.onmouseup = function() {

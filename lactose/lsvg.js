@@ -18,7 +18,6 @@
         };
         s.setAttribute('xmlns', LSVG.url);
         s.id = 'svg';
-        console.log(s);
         return s;
     }
     
