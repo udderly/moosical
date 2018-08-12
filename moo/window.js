@@ -1,3 +1,194 @@
+class DAWButton extends SVGGroup { // a general button
+    constructor(parent, params = {}) {
+        super(parent, 'g', params);
+
+        this.translation = new TONES.Translation();
+        this.transform.add(this.translation);
+
+        this.x = utils.select(params.x, 0);
+        this.y = utils.select(params.y, 0);
+
+        let evtFactory = (func) => {
+            return (evt) => {
+                if (evt) {
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                }
+                func.call(this, evt);
+            };
+        };
+
+        this.onMouseOver = evtFactory(this.over);
+        this.onMouseDown = evtFactory(this.down);
+        this.onMouseUp = evtFactory(this.up);
+        this.onMouseOut = evtFactory(this.out);
+        this.onClickEvent = evtFactory(this.click);
+
+        this.allow_hover = utils.select(params.allow_hover, true);
+        this.allow_click = utils.select(params.allow_click, true);
+    }
+
+    get x() { return this.translation.x; }
+    get y() { return this.translation.y; }
+
+    set x(value) { this.translation.x = value; }
+    set y(value) { this.translation.y = value; }
+
+    get allow_hover() { return this._allow_hover; }
+    set allow_hover(value) {
+        if (this._allow_hover && !value) {
+            this.removeEventListener("mouseover", this.onMouseOver);
+            this.removeEventListener("mouseout", this.onMouseOut);
+        } else if (!this._allow_hover && value) {
+            this.addEventListener("mouseover", this.onMouseOver);
+            this.addEventListener("mouseout", this.onMouseOut);
+        }
+
+        this._allow_hover = value;
+    }
+
+    get allow_click() { return this._allow_click; }
+    set allow_click(value) {
+        if (this._allow_click && !value) {
+            this.removeEventListener("click", this.onClickEvent);
+            this.removeEventListener("mousedown", this.onMouseDown);
+            this.removeEventListener("mouseup", this.onMouseUp);
+        } else if (!this._allow_click && value) {
+            this.addEventListener("click", this.onClickEvent);
+            this.addEventListener("mousedown", this.onMouseDown);
+            this.addEventListener("mouseup", this.onMouseUp);
+        }
+
+        this._allow_click = value;
+    }
+
+    _destroy() {
+        this.removeEventListener("mouseover", this.onMouseOver);
+        this.removeEventListener("mouseout", this.onMouseOut);
+        this.removeEventListener("click", this.onClickEvent);
+        this.removeEventListener("mousedown", this.onMouseDown);
+        this.removeEventListener("mouseup", this.onMouseUp);
+    }
+}
+
+const EXPAND_BUTTON_PATH = "M 0.25 0.35 L 0.25 0.75 L 0.65 0.75 L 0.25 0.35 M 0.35 0.25 L 0.75 0.25 L 0.75 0.65 L 0.35 0.25";
+const MINIMIZE_BUTTON_PATH = "M 0.2 0.43 L 0.8 0.43 L 0.8 0.57 L 0.2 0.57 Z";
+const X_BUTTON_PATH = "M 0.2 0.7 L 0.3 0.8 L 0.5 0.6 L 0.7 0.8 L 0.8 0.7 L 0.6 0.5 L 0.8 0.3 L 0.7 0.2 L 0.5 0.4 L 0.3 0.2 L 0.2 0.3 L 0.4 0.5 Z";
+
+class DAWWindowButton extends DAWButton {
+    constructor(parent, params = {}) {
+        super(parent, params);
+
+        this.button = new SVGGroup(this);
+
+        this.onMouseOut();
+
+        this.hover_path_scale = new TONES.ScaleTransform();
+        this.path.transform.add(this.hover_path_scale);
+
+        this.button_size = utils.select(params.button_size, 6.5);
+        this.normal_color = utils.select(params.normal_color, "#8b8");
+        this.click_color = utils.select(params.click_color, "#6a6");
+        this.hover_path = utils.select(params.hover_path, EXPAND_BUTTON_PATH);
+        this.hover_color = utils.select(params.hover_color, "#373");
+
+        this.ispressed = false;
+
+        this.element.style.cursor = "default";
+    }
+
+    get button_size() { return this.bgcircle.r; }
+    get normal_color() { return this._normal_color; }
+    get click_color() { return this._click_color; }
+    get hover_path() { return this.bgcircle.fill; }
+    get hover_color() { return this.bgcircle.fill; }
+
+    set normal_color(value) {
+        this._normal_color = value;
+
+        if (!this.ispressed)
+            this.bgcircle.fill = this.normal_color;
+    }
+
+    set click_color(value) {
+        this._click_color = value;
+
+        if (this.ispressed)
+            this.bgcircle.fill = this.click_color;
+    }
+
+    set hover_path(value) {
+        this.path.d = value;
+    }
+
+    set hover_color(value) {
+        this.path.fill = value;
+    }
+
+    set button_size(value) {
+        this.bgcircle.r = value;
+        this.bgcircle.cx = value;
+        this.bgcircle.cy = value;
+
+        this.hover_path_scale.xs = 2 * value;
+        this.hover_path_scale.ys = 2 * value;
+    }
+
+    get height() {
+        return 2 * this.button_size;
+    }
+
+    get width() {
+        return 2 * this.button_size;
+    }
+
+    over(evt) {
+        this.path.display = "";
+    }
+
+    down(evt) {
+        this.bgcircle.fill = this.click_color;
+
+        this.ispressed = true;
+    }
+
+    up(evt) {
+        this.bgcircle.fill = this.normal_color;
+
+        this.ispressed = false;
+    }
+
+    out(evt) {
+        if (!this.bgcircle)
+            this.bgcircle = new TONES.Circle(this.button);
+        if (!this.path)
+            this.path = new TONES.Path(this.button, {d: this.hover_path || " "});
+        this.path.display = "none";
+    }
+}
+
+class DAWCloseButton extends DAWWindowButton {
+    constructor(parent, params = {}) {
+        super(parent, Object.assign({
+            normal_color: "#d88",
+            click_color: "#a66",
+            hover_color: "#733",
+            hover_path: X_BUTTON_PATH
+        }, params));
+    }
+}
+
+class DAWMinimizeButton extends DAWWindowButton {
+    constructor(parent, params = {}) {
+        super(parent, Object.assign({
+            normal_color: "#dd8",
+            click_color: "#aa6",
+            hover_color: "#773",
+            hover_path: MINIMIZE_BUTTON_PATH
+        }, params));
+    }
+}
+
 class DAWBar extends SVGGroup { // HTML class name: dawbar
     constructor(parent, params = {}) {
         utils.assert(parent instanceof DAWWindow, "parent of DAWWindow must be DAW");
@@ -6,7 +197,15 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
 
         this.addClass("dawbar");
 
+        this.buttons = [];
+        this.button_sep = utils.select(params.button_sep, 7.5);
+
         this.path = new TONES.Path(this);
+        this.x_button = new DAWCloseButton(this);
+        this.min_button = new DAWMinimizeButton(this);
+        this.fs_button = new DAWWindowButton(this);
+
+        this.buttons.push(this.x_button, this.min_button, this.fs_button);
     }
 
     get x() {
@@ -41,6 +240,15 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
         return this._allow_drag;
     }
 
+    get button_sep() {
+        return this._button_sep;
+    }
+
+    set button_sep(value) {
+        this._button_sep = value;
+        this.updateButtonPos();
+    }
+
     set allow_drag(value) {
         if (this._allow_drag && !value) {
             this.removeEventListener("mousedown", this.onClickEvent);
@@ -58,21 +266,27 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
             this._dragging = false;
 
             let oce = this.onClickEvent = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._dragging = true;
-                if (!this._lastEvent)
-                    this._lastEvent = {x: evt.x, y: evt.y};
+                if (!this._firstEvent)
+                    this._firstEvent = {x: evt.x, y: evt.y};
                 this.context.addEventListener("mousemove", this.onDragEvent);
                 this.context.addEventListener("mouseup", this.onReleaseEvent);
             };
 
             let ode = this.onDragEvent = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._dragging)
                     return;
 
-                if (!this._lastEvent)
-                    this._lastEvent = {x: evt.x, y: evt.y};
+                if (!this._firstEvent)
+                    this._firstEvent = {x: evt.x, y: evt.y};
 
-                let le = this._lastEvent;
+                let le = this._firstEvent;
 
                 let offsetx = evt.x - le.x;
                 let offsety = evt.y - le.y;
@@ -80,12 +294,15 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
                 this.parent.x += offsetx;
                 this.parent.y += offsety;
 
-                this._lastEvent = {x: evt.x, y: evt.y};
+                this._firstEvent = {x: evt.x, y: evt.y};
             };
 
             let ore = this.onReleaseEvent = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._dragging = false;
-                this._lastEvent = undefined;
+                this._firstEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this.onDragEvent);
                 this.context.removeEventListener("mouseup", this.onReleaseEvent);
@@ -93,7 +310,7 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
 
             this.addEventListener("mousedown", oce);
 
-            this.element.style.cursor = "move";
+            // this.element.style.cursor = "move"; // cursor when hovering over bar
         }
 
         this._allow_drag = value;
@@ -113,6 +330,19 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
         }
     }
 
+    updateButtonPos() {
+        let x = this.height / 2 - (this.buttons.length > 0 ? this.buttons[0].height / 2 : 0);
+
+        for (let i = 0; i < this.buttons.length; i++) {
+            let button = this.buttons[i];
+
+            button.x = x;
+            button.y = this.height / 2 - button.height / 2;
+
+            x += button.width + this.button_sep;
+        }
+    }
+
     updateBarPath() {
         let er = this.edge_round;
         let w = this.width, h = this.height;
@@ -122,9 +352,9 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
 
         this._er = er, this._w = w, this._h = h;
 
-        let d = `M 0 ${er} a ${er} ${er} 0 0 1 ${er} ${-er} L ${w - er} 0 a ${er} ${er} 0 0 1 ${er} ${er} L ${w} ${h} L 0 ${h} Z`;
+        this.path.d = `M 0 ${er} a ${er} ${er} 0 0 1 ${er} ${-er} L ${w - er} 0 a ${er} ${er} 0 0 1 ${er} ${er} L ${w} ${h} L 0 ${h} Z`;
 
-        this.path.d = d;
+        this.updateButtonPos();
     }
 
 }
@@ -133,12 +363,12 @@ function clamp(x, min, max) {
     if (x < min)
         return min;
     else if (x > max)
-        return max
+        return max;
     else
         return x;
 }
 
-const RESIZE_SELECTOR_ENCROACH = 3.5;
+const RESIZE_SELECTOR_ENCROACH = 1.8;
 
 class DAWWindow extends SVGGroup { // HTML class name: dawwindow
     constructor(parent, params = {}) {
@@ -166,7 +396,7 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
         this.edge_round = utils.select(params.edge_round, 5);
 
         this.bar_fill = utils.select(params.bar_fill, "#ccc");
-        this.bar_height = utils.select(params.bar_height, 20);
+        this.bar_height = utils.select(params.bar_height, 35);
         this.show_bar = utils.select(params.show_bar, true);
         this.allow_drag = utils.select(params.allow_drag, true);
 
@@ -273,40 +503,39 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ns-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_n_dragging = true;
-                if (!this._resize_n_lastEvent)
-                    this._resize_n_lastEvent = {x: evt.x, y: evt.y};
                 this.context.addEventListener("mousemove", this._onresize_n_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_n_mouseup);
             };
 
             this._onresize_n_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_n_dragging)
                     return;
 
-                if (!this._resize_n_lastEvent)
-                    this._resize_n_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_n_lastEvent;
-
-                let offsety = evt.y - le.y;
                 let ph = this.height;
 
-                this.height -= offsety;
+                this.height += this.y - evt.y;
                 this.y -= (this.height - ph);
-
-                this._resize_n_lastEvent = {x: evt.x, y: evt.y};
             };
 
             this._onresize_n_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_n_dragging = false;
-                this._resize_n_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_n_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_n_mouseup);
             };
         } else if (this.resize_n && !value) {
             this._resize_n_h_rect.destroy();
+            this._resize_n_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_n_mousemove);
@@ -346,37 +575,37 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ns-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_s_dragging = true;
-                if (!this._resize_s_lastEvent)
-                    this._resize_s_lastEvent = {x: evt.x, y: evt.y};
+
                 this.context.addEventListener("mousemove", this._onresize_s_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_s_mouseup);
             };
 
             this._onresize_s_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_s_dragging)
                     return;
 
-                if (!this._resize_s_lastEvent)
-                    this._resize_s_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_s_lastEvent;
-
-                let offsety = evt.y - le.y;
-                this.height += offsety;
-
-                this._resize_s_lastEvent = {x: evt.x, y: evt.y};
+                this.height = evt.y - this.y;
             };
 
             this._onresize_s_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_s_dragging = false;
-                this._resize_s_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_s_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_s_mouseup);
             };
         } else if (this.resize_s && !value) {
             this._resize_s_h_rect.destroy();
+            this._resize_s_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_s_mousemove);
@@ -417,37 +646,36 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ew-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_e_dragging = true;
-                if (!this._resize_e_lastEvent)
-                    this._resize_e_lastEvent = {x: evt.x, y: evt.y};
+
                 this.context.addEventListener("mousemove", this._onresize_e_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_e_mouseup);
             };
 
             this._onresize_e_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_e_dragging)
                     return;
-
-                if (!this._resize_e_lastEvent)
-                    this._resize_e_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_e_lastEvent;
-
-                let offsetx = evt.x - le.x;
-                this.width += offsetx;
-
-                this._resize_e_lastEvent = {x: evt.x, y: evt.y};
+                this.width = evt.x - this.x;
             };
 
             this._onresize_e_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_e_dragging = false;
-                this._resize_e_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_e_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_e_mouseup);
             };
         } else if (this.resize_e && !value) {
             this._resize_e_h_rect.destroy();
+            this._resize_e_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_e_mousemove);
@@ -488,40 +716,40 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ew-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_w_dragging = true;
-                if (!this._resize_w_lastEvent)
-                    this._resize_w_lastEvent = {x: evt.x, y: evt.y};
+
                 this.context.addEventListener("mousemove", this._onresize_w_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_w_mouseup);
             };
 
             this._onresize_w_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_w_dragging)
                     return;
 
-                if (!this._resize_w_lastEvent)
-                    this._resize_w_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_w_lastEvent;
-
-                let offsetx = evt.x - le.x;
                 let pw = this.width;
 
-                this.width -= offsetx;
+                this.width -= evt.x - this.x;
                 this.x -= this.width - pw;
-
-                this._resize_w_lastEvent = {x: evt.x, y: evt.y};
             };
 
             this._onresize_w_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_w_dragging = false;
-                this._resize_w_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_w_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_w_mouseup);
             };
         } else if (this.resize_w && !value) {
             this._resize_w_h_rect.destroy();
+            this._resize_w_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_w_mousemove);
@@ -562,46 +790,44 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nwse-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_nw_dragging = true;
-                if (!this._resize_nw_lastEvent)
-                    this._resize_nw_lastEvent = {x: evt.x, y: evt.y};
+
                 this.context.addEventListener("mousemove", this._onresize_nw_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_nw_mouseup);
             };
 
             this._onresize_nw_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_nw_dragging)
                     return;
-
-                if (!this._resize_nw_lastEvent)
-                    this._resize_nw_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_nw_lastEvent;
-
-                let offsetx = evt.x - le.x;
-                let offsety = evt.y - le.y;
 
                 let pw = this.width;
                 let ph = this.height;
 
-                this.width -= offsetx;
-                this.height -= offsety;
+                this.width -= evt.x - this.x;
+                this.height -= evt.y - this.y;
 
                 this.x += pw - this.width;
                 this.y += ph - this.height;
-
-                this._resize_nw_lastEvent = {x: evt.x, y: evt.y};
             };
 
             this._onresize_nw_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_nw_dragging = false;
-                this._resize_nw_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_nw_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_nw_mouseup);
             };
         } else if (this.resize_nw && !value) {
             this._resize_nw_h_rect.destroy();
+            this._resize_nw_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_nw_mousemove);
@@ -642,45 +868,43 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nesw-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_ne_dragging = true;
-                if (!this._resize_ne_lastEvent)
-                    this._resize_ne_lastEvent = {x: evt.x, y: evt.y};
+
                 this.context.addEventListener("mousemove", this._onresize_ne_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_ne_mouseup);
             };
 
             this._onresize_ne_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_ne_dragging)
                     return;
-
-                if (!this._resize_ne_lastEvent)
-                    this._resize_ne_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_ne_lastEvent;
-
-                let offsetx = evt.x - le.x;
-                let offsety = evt.y - le.y;
 
                 let pw = this.width;
                 let ph = this.height;
 
-                this.width += offsetx;
-                this.height -= offsety;
+                this.width = evt.x - this.x;
+                this.height -= evt.y - this.y;
 
                 this.y += ph - this.height;
-
-                this._resize_ne_lastEvent = {x: evt.x, y: evt.y};
             };
 
             this._onresize_ne_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_ne_dragging = false;
-                this._resize_ne_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_ne_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_ne_mouseup);
             };
         } else if (this.resize_ne && !value) {
             this._resize_ne_h_rect.destroy();
+            this._resize_ne_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_ne_mousemove);
@@ -721,45 +945,42 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nesw-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_sw_dragging = true;
-                if (!this._resize_sw_lastEvent)
-                    this._resize_sw_lastEvent = {x: evt.x, y: evt.y};
+
                 this.context.addEventListener("mousemove", this._onresize_sw_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_sw_mouseup);
             };
 
             this._onresize_sw_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_sw_dragging)
                     return;
 
-                if (!this._resize_sw_lastEvent)
-                    this._resize_sw_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_sw_lastEvent;
-
-                let offsetx = evt.x - le.x;
-                let offsety = evt.y - le.y;
-
                 let pw = this.width;
-                let ph = this.height;
 
-                this.width -= offsetx;
-                this.height += offsety;
+                this.width -= evt.x - this.x;
+                this.height = evt.y - this.y;
 
                 this.x += pw - this.width;
-
-                this._resize_sw_lastEvent = {x: evt.x, y: evt.y};
             };
 
             this._onresize_sw_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_sw_dragging = false;
-                this._resize_sw_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_sw_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_sw_mouseup);
             };
         } else if (this.resize_sw && !value) {
             this._resize_sw_h_rect.destroy();
+            this._resize_sw_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_sw_mousemove);
@@ -800,40 +1021,38 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nwse-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_se_dragging = true;
-                if (!this._resize_se_lastEvent)
-                    this._resize_se_lastEvent = {x: evt.x, y: evt.y};
+
                 this.context.addEventListener("mousemove", this._onresize_se_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_se_mouseup);
             };
 
             this._onresize_se_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_se_dragging)
                     return;
 
-                if (!this._resize_se_lastEvent)
-                    this._resize_se_lastEvent = {x: evt.x, y: evt.y};
-
-                let le = this._resize_se_lastEvent;
-
-                let offsetx = evt.x - le.x;
-                let offsety = evt.y - le.y;
-
-                this.width += offsetx;
-                this.height += offsety;
-
-                this._resize_se_lastEvent = {x: evt.x, y: evt.y};
+                this.width = evt.x - this.x;
+                this.height = evt.y - this.y;
             };
 
             this._onresize_se_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_se_dragging = false;
-                this._resize_se_lastEvent = undefined;
 
                 this.context.removeEventListener("mousemove", this._onresize_se_mousemove);
                 this.context.removeEventListener("mouseup", this._onresize_se_mouseup);
             };
         } else if (this.resize_se && !value) {
             this._resize_se_h_rect.destroy();
+            this._resize_se_dragging = false;
 
             try {
                 this.context.removeEventListener("mousemove", this._onresize_se_mousemove);
@@ -863,6 +1082,17 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
         rect.width = 2 * bh + RESIZE_SELECTOR_ENCROACH;
         rect.height = 2 * bh + RESIZE_SELECTOR_ENCROACH;
         rect.opacity = 0; // so that it isn't displayed
+    }
+
+    get dragging() {
+        return this._resize_se_dragging ||
+            this._resize_sw_dragging ||
+            this._resize_ne_dragging ||
+            this._resize_nw_dragging ||
+            this._resize_n_dragging ||
+            this._resize_s_dragging ||
+            this._resize_w_dragging ||
+            this._resize_e_dragging;
     }
 
     _destroy() {
@@ -908,5 +1138,95 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
 
         this.updateBar();
         this._updateResizeSelectorsOnResize();
+    }
+}
+
+const HTMLNS = "http://www.w3.org/1999/xhtml";
+
+class HTMLDAWWindow extends DAWWindow {
+    constructor(parent, params = {}) {
+        super(parent, params);
+
+        this.html_top_margin = utils.select(params.html_top_margin, 10);
+        this.html_bottom_margin = utils.select(params.html_bottom_margin, 10);
+        this.html_right_margin = utils.select(params.html_right_margin, 10);
+        this.html_left_margin = utils.select(params.html_left_margin, 10);
+
+        let html = this.html = new SVGGroup(this, 'foreignObject');
+        this.html_translation = new TONES.Translation();
+        html.addTransform(this.html_translation);
+
+        html.set("width", super.width);
+        html.set("height", super.height);
+
+        let body = this.body = this.html.element.appendChild(document.createElementNS(HTMLNS, "body"));
+
+        this.updateHTMLPos();
+    }
+
+    updateHTMLPos() {
+        if (this.html) {
+            let width = super.width, height = super.height;
+
+            let lm = this.html_translation.x = this.html_left_margin;
+            let tm = this.html_translation.y = this.html_top_margin + this.bar_height;
+
+            let hwidth = Math.max(super.width - this.html_right_margin - lm, 0);
+            let hheight = Math.max(super.height - tm - this.html_bottom_margin);
+
+            this.html.set("width", hwidth);
+            this.html.set("height", hheight);
+
+            this.body.style.overflowY = "scroll";
+        }
+    }
+
+    get html_top_margin() {
+        return this._html_top_margin;
+    }
+
+    set html_top_margin(value) {
+        this._html_top_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get html_bottom_margin() {
+        return this._html_bottom_margin;
+    }
+
+    set html_bottom_margin(value) {
+        this._html_bottom_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get html_right_margin() {
+        return this._html_right_margin;
+    }
+
+    set html_right_margin(value) {
+        this._html_right_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get html_left_margin() {
+        return this._html_left_margin;
+    }
+
+    set html_left_margin(value) {
+        this._html_left_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get width() { return super.width; }
+    get height() { return super.height; }
+
+    set width(value) {
+        super.width = value;
+        this.updateHTMLPos();
+    }
+
+    set height(value) {
+        super.height = value;
+        this.updateHTMLPos();
     }
 }
