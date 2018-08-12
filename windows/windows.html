@@ -17,12 +17,58 @@
                 height: 100%;
                 width: 100%;
             }
+            *::selection {
+                background: none;
+            }
+            
+            #sources {
+                display: none;
+            }
+            
+            #windowTop .all {
+                align-items: center;
+                background-color: #069;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                cursor: move;
+                display: flex;
+                height: 100%;
+            }
+            #windowTop .all div {
+                align-items: center;
+                display: flex;
+                margin-right: 5px;
+            }
+            #windowTop p {
+                color: #fff;
+                flex-grow: 1;
+                font-family: Abel;
+                margin: 0 0 0 5px;
+            }
+            #windowTop .material-icons {
+                color: #fff;
+                font-size: 18px;
+            }
         </style>
         
         <script src="../lactose/lsvg.js"></script>
     </head>
 
     <body>
+        <div id="sources">
+            <div id="windowTop">
+                <div class="all">
+                    <p>Window</p>
+                    <div>
+                        <i class="material-icons">remove</i>
+                        <i class="material-icons">add</i>
+                        <i class="material-icons">clear</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
         <script>
             let s = LSVG.svg();
             document.body.appendChild(s);

@@ -25,54 +25,12 @@ class Window {
         
         let body = LSVG.rect(0, 0, this.params.width, this.params.height, '#fff');
         body.style.stroke = "#069";
+        body.style.rx = 5;
         this.container.appendChild(body);
         
         let nav = LSVG.foreignObject(0, 0, this.params.width, 25);
-        
-        nav.innerHTML = `
-
-<style>
-
-#all {
-align-items: center;
-background-color: #069;
-display: flex;
-height: 100%;
-}
-
-#all div {
-align-items: center;
-display: flex;
-margin-right: 5px;
-}
-
-p {
-color: #fff;
-flex-grow: 1;
-font-family: Abel;
-margin: 0 0 0 5px;
-}
-
-.material-icons {
-color: #fff;
-font-size: 18px;
-}
-
-</style>
-
-<div id="all">
-
-<p>Window</p>
-
-<div>
-<i class="material-icons">remove</i>
-<i class="material-icons">add</i>
-<i class="material-icons">clear</i>
-</div>
-
-</div>
-
-`;
+        nav.id = 'windowTop';
+        nav.innerHTML = document.getElementById('windowTop').innerHTML;
         
         this.container.appendChild(nav);
         
