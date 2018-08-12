@@ -10,6 +10,18 @@
     
     const url = 'http://www.w3.org/2000/svg';
     
+    function svg() {
+        let s = document.createElementNS(url, 'svg');
+        s.draggable = true;
+        s.ondragstart = function(e) {
+            e.preventDefault();
+        };
+        s.setAttribute('xmlns', LSVG.url);
+        s.id = 'svg';
+        console.log(s);
+        return s;
+    }
+    
     function circle(cx, cy, r, c) {
         let c1 = document.createElementNS(url, 'circle');
         c1.style.cx = cx;
@@ -63,6 +75,7 @@
     }
     
     exports.url = url;
+    exports.svg = svg;
     exports.circle = circle;
     exports.rect = rect;
     exports.text = text;

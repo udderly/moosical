@@ -23,7 +23,10 @@
     </head>
 
     <body>
-        <svg id="svg" draggable="true" ondragstart="stop(event)"></svg>
+        <script>
+            let s = LSVG.svg();
+            document.body.appendChild(s);
+        </script>
         
         <script src="windows.js"></script>
         <script>
@@ -32,10 +35,6 @@
                 height: 400
             });
             win.build();
-            
-            function stop(event) {
-                event.preventDefault();
-            }
         </script>
     </body>
 </html>

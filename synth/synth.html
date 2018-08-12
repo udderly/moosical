@@ -32,14 +32,18 @@
     </head>
 
     <body>
-        <svg viewBox="0 0 750 500" xmlns="http://www.w3.org/2000/svg" id="svg" draggable="true" ondragstart="stop(event)"></svg>
-        
         <svg width="50" height="500" id="bar"></svg>
+        
+        <script>
+            let s = LSVG.svg();
+            s.setAttribute('viewBox', '0 0 750 500');
+            document.body.appendChild(s);
+        </script>
         
         <script src="synth.js"></script>
         
         <script>
-            let synth = new Synth(document.getElementById('svg'))
+            let synth = new Synth(document.getElementById('svg'));
             synth.build();
             
             function stop(event) {
