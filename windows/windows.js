@@ -53,6 +53,7 @@ class Window {
         e.nav.id = 'windowTop';
         e.nav.innerHTML = document.getElementById('windowTop').innerHTML;
         e.container.appendChild(e.nav);
+            
         
         e.nav.onmousedown = function(event) {
             self.sx = event.clientX;
@@ -60,16 +61,16 @@ class Window {
             self.ox = self.params.x;
             self.oy = self.params.y;
 
-            document.onmousemove = function(event) {
-                self.params.x = event.clientX - self.sx + self.ox;
-                self.params.y = event.clientY - self.sy + self.oy;
+            let f = function(ev) {
+                self.params.x = ev.clientX - self.sx + self.ox;
+                self.params.y = ev.clientY - self.sy + self.oy;
                 self.update();
             };
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
+            
+            document.addEventListener('mousemove', f);
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', f);
+            }, {once: true});
         };
         
         e.resize = {};
@@ -84,16 +85,16 @@ class Window {
             self.oy = self.params.y;
             self.oh = self.params.height;
 
-            document.onmousemove = function(event) {
-                self.params.y = event.clientY - self.sy + self.oy;
-                self.params.height = self.sy - event.clientY + self.oh;
+            let f = function(ev) {
+                self.params.y = ev.clientY - self.sy + self.oy;
+                self.params.height = self.sy - ev.clientY + self.oh;
                 self.update();
             };
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
+            
+            document.addEventListener('mousemove', f);
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', f);
+            }, {once: true});
         }
         
         e.resize.e = LSVG.rect(0, 5, 10, 0, '');
@@ -106,15 +107,15 @@ class Window {
             self.sx = event.clientX;
             self.ow = self.params.width;
 
-            document.onmousemove = function(event) {
-                self.params.width = event.clientX - self.sx + self.ow;
+            let f = function(ev) {
+                self.params.width = ev.clientX - self.sx + self.ow;
                 self.update();
             };
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
+            
+            document.addEventListener('mousemove', f);
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', f);
+            }, {once: true});
         }
         
         e.resize.s = LSVG.rect(5, 0, 0, 10, '');
@@ -127,15 +128,15 @@ class Window {
             self.sy = event.clientY;
             self.oh = self.params.height;
 
-            document.onmousemove = function(event) {
-                self.params.height = event.clientY - self.sy + self.oh;
+            let f = function(ev) {
+                self.params.height = ev.clientY - self.sy + self.oh;
                 self.update();
             };
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
+            
+            document.addEventListener('mousemove', f);
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', f);
+            }, {once: true});
         }
         
         e.resize.w = LSVG.rect(-5, 5, 10, 0, '');
@@ -148,16 +149,16 @@ class Window {
             self.ox = self.params.x;
             self.ow = self.params.width;
 
-            document.onmousemove = function(event) {
-                self.params.x = event.clientX - self.sx + self.ox;
-                self.params.width = self.sx - event.clientX + self.ow;
+            let f = function(ev) {
+                self.params.x = ev.clientX - self.sx + self.ox;
+                self.params.width = self.sx - ev.clientX + self.ow;
                 self.update();
             };
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
+            
+            document.addEventListener('mousemove', f);
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', f);
+            }, {once: true});
         }
         
         this.update();
