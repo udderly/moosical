@@ -8,11 +8,21 @@ class DAWButton extends SVGGroup { // a general button
         this.x = utils.select(params.x, 0);
         this.y = utils.select(params.y, 0);
 
-        this.onMouseOver = (evt) => this.over(evt);
-        this.onMouseDown = (evt) => this.down(evt);
-        this.onMouseUp = (evt) => this.up(evt);
-        this.onMouseOut = (evt) => this.out(evt);
-        this.onClickEvent = (evt) => this.click(evt);
+        let evtFactory = (func) => {
+            return (evt) => {
+                if (evt) {
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                }
+                func.call(this, evt);
+            };
+        };
+
+        this.onMouseOver = evtFactory(this.over);
+        this.onMouseDown = evtFactory(this.down);
+        this.onMouseUp = evtFactory(this.up);
+        this.onMouseOut = evtFactory(this.out);
+        this.onClickEvent = evtFactory(this.click);
 
         this.allow_hover = utils.select(params.allow_hover, true);
         this.allow_click = utils.select(params.allow_click, true);
@@ -256,6 +266,9 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
             this._dragging = false;
 
             let oce = this.onClickEvent = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._dragging = true;
                 if (!this._firstEvent)
                     this._firstEvent = {x: evt.x, y: evt.y};
@@ -264,6 +277,9 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
             };
 
             let ode = this.onDragEvent = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._dragging)
                     return;
 
@@ -282,6 +298,9 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
             };
 
             let ore = this.onReleaseEvent = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._dragging = false;
                 this._firstEvent = undefined;
 
@@ -333,9 +352,7 @@ class DAWBar extends SVGGroup { // HTML class name: dawbar
 
         this._er = er, this._w = w, this._h = h;
 
-        let d = `M 0 ${er} a ${er} ${er} 0 0 1 ${er} ${-er} L ${w - er} 0 a ${er} ${er} 0 0 1 ${er} ${er} L ${w} ${h} L 0 ${h} Z`;
-
-        this.path.d = d;
+        this.path.d = `M 0 ${er} a ${er} ${er} 0 0 1 ${er} ${-er} L ${w - er} 0 a ${er} ${er} 0 0 1 ${er} ${er} L ${w} ${h} L 0 ${h} Z`;
 
         this.updateButtonPos();
     }
@@ -486,12 +503,18 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ns-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_n_dragging = true;
                 this.context.addEventListener("mousemove", this._onresize_n_mousemove);
                 this.context.addEventListener("mouseup", this._onresize_n_mouseup);
             };
 
             this._onresize_n_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_n_dragging)
                     return;
 
@@ -502,6 +525,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_n_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_n_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_n_mousemove);
@@ -549,6 +575,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ns-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_s_dragging = true;
 
                 this.context.addEventListener("mousemove", this._onresize_s_mousemove);
@@ -556,6 +585,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_s_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_s_dragging)
                     return;
 
@@ -563,6 +595,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_s_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_s_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_s_mousemove);
@@ -611,6 +646,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ew-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_e_dragging = true;
 
                 this.context.addEventListener("mousemove", this._onresize_e_mousemove);
@@ -618,12 +656,18 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_e_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_e_dragging)
                     return;
                 this.width = evt.x - this.x;
             };
 
             this._onresize_e_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_e_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_e_mousemove);
@@ -672,6 +716,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "ew-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_w_dragging = true;
 
                 this.context.addEventListener("mousemove", this._onresize_w_mousemove);
@@ -679,6 +726,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_w_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_w_dragging)
                     return;
 
@@ -689,6 +739,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_w_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_w_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_w_mousemove);
@@ -737,6 +790,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nwse-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_nw_dragging = true;
 
                 this.context.addEventListener("mousemove", this._onresize_nw_mousemove);
@@ -744,6 +800,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_nw_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_nw_dragging)
                     return;
 
@@ -758,6 +817,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_nw_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_nw_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_nw_mousemove);
@@ -806,6 +868,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nesw-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_ne_dragging = true;
 
                 this.context.addEventListener("mousemove", this._onresize_ne_mousemove);
@@ -813,6 +878,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_ne_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_ne_dragging)
                     return;
 
@@ -826,6 +894,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_ne_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_ne_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_ne_mousemove);
@@ -874,6 +945,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nesw-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_sw_dragging = true;
 
                 this.context.addEventListener("mousemove", this._onresize_sw_mousemove);
@@ -881,6 +955,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_sw_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_sw_dragging)
                     return;
 
@@ -893,6 +970,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_sw_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_sw_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_sw_mousemove);
@@ -941,6 +1021,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             rect.element.style.cursor = "nwse-resize";
 
             rect.element.onmousedown = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_se_dragging = true;
 
                 this.context.addEventListener("mousemove", this._onresize_se_mousemove);
@@ -948,6 +1031,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_se_mousemove = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 if (!this._resize_se_dragging)
                     return;
 
@@ -956,6 +1042,9 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
             };
 
             this._onresize_se_mouseup = (evt) => {
+                evt.stopPropagation();
+                evt.preventDefault();
+
                 this._resize_se_dragging = false;
 
                 this.context.removeEventListener("mousemove", this._onresize_se_mousemove);
@@ -1049,5 +1138,95 @@ class DAWWindow extends SVGGroup { // HTML class name: dawwindow
 
         this.updateBar();
         this._updateResizeSelectorsOnResize();
+    }
+}
+
+const HTMLNS = "http://www.w3.org/1999/xhtml";
+
+class HTMLDAWWindow extends DAWWindow {
+    constructor(parent, params = {}) {
+        super(parent, params);
+
+        this.html_top_margin = utils.select(params.html_top_margin, 10);
+        this.html_bottom_margin = utils.select(params.html_bottom_margin, 10);
+        this.html_right_margin = utils.select(params.html_right_margin, 10);
+        this.html_left_margin = utils.select(params.html_left_margin, 10);
+
+        let html = this.html = new SVGGroup(this, 'foreignObject');
+        this.html_translation = new TONES.Translation();
+        html.addTransform(this.html_translation);
+
+        html.set("width", super.width);
+        html.set("height", super.height);
+
+        let body = this.body = this.html.element.appendChild(document.createElementNS(HTMLNS, "body"));
+
+        this.updateHTMLPos();
+    }
+
+    updateHTMLPos() {
+        if (this.html) {
+            let width = super.width, height = super.height;
+
+            let lm = this.html_translation.x = this.html_left_margin;
+            let tm = this.html_translation.y = this.html_top_margin + this.bar_height;
+
+            let hwidth = Math.max(super.width - this.html_right_margin - lm, 0);
+            let hheight = Math.max(super.height - tm - this.html_bottom_margin);
+
+            this.html.set("width", hwidth);
+            this.html.set("height", hheight);
+
+            this.body.style.overflowY = "scroll";
+        }
+    }
+
+    get html_top_margin() {
+        return this._html_top_margin;
+    }
+
+    set html_top_margin(value) {
+        this._html_top_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get html_bottom_margin() {
+        return this._html_bottom_margin;
+    }
+
+    set html_bottom_margin(value) {
+        this._html_bottom_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get html_right_margin() {
+        return this._html_right_margin;
+    }
+
+    set html_right_margin(value) {
+        this._html_right_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get html_left_margin() {
+        return this._html_left_margin;
+    }
+
+    set html_left_margin(value) {
+        this._html_left_margin = value;
+        this.updateHTMLPos();
+    }
+
+    get width() { return super.width; }
+    get height() { return super.height; }
+
+    set width(value) {
+        super.width = value;
+        this.updateHTMLPos();
+    }
+
+    set height(value) {
+        super.height = value;
+        this.updateHTMLPos();
     }
 }
