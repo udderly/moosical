@@ -44,15 +44,15 @@ class Synth {
     build(s) {
         let svg = this.svg;
         
-        let container = document.createElementNS(url, 'g');
+        let container = document.createElementNS(LSVG.url, 'g');
         
-        let frame = document.createElementNS(url, 'g');
-        let r1 = rect(0, 49, 750, 1, '#ccc');
-        let r2 = rect(0, 0, 750, 500, '#000');
+        let frame = document.createElementNS(LSVG.url, 'g');
+        let r1 = LSVG.rect(0, 49, 750, 1, '#ccc');
+        let r2 = LSVG.rect(0, 0, 750, 500, '#000');
         r2.style.fillOpacity = 0;
         r2.style.stroke = '#333';
         r2.style.strokeWidth = 2;
-        let t1 = text(10, 40, 'start', 'Synth', '#000');
+        let t1 = LSVG.text(10, 40, 'start', 'Synth', '#000');
         t1.classList.add('title');
         frame.appendChild(r1);
         frame.appendChild(r2);

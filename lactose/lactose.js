@@ -60,24 +60,24 @@
         }
 
         add() {
-            let g1 = g();
+            let g1 = LSVG.g();
 
-            let c1 = circle(this.cx, this.cy, this.s / 2, '#eee');
+            let c1 = LSVG.circle(this.cx, this.cy, this.s / 2, '#eee');
             g1.appendChild(c1);
 
-            let c3 = circle(this.cx, this.cy, this.s / 2, this.c);
+            let c3 = LSVG.circle(this.cx, this.cy, this.s / 2, this.c);
             g1.appendChild(c3);
             this.mod.push(c3);
 
-            let arc = document.createElementNS(url, 'path');
+            let arc = document.createElementNS(LSVG.url, 'path');
             arc.style.fill = this.c;
             g1.appendChild(arc);
             this.mod.push(arc);
 
-            let c2 = circle(this.cx, this.cy, this.s / 2 - 2, '#fff');
+            let c2 = LSVG.circle(this.cx, this.cy, this.s / 2 - 2, '#fff');
             g1.appendChild(c2);
 
-            let r1 = rect(this.cx - 1, this.cy + this.s / 4, 2, this.s / 4, this.c);
+            let r1 = LSVG.rect(this.cx - 1, this.cy + this.s / 4, 2, this.s / 4, this.c);
             //g1.appendChild(r1);
             this.mod.push(r1);
 
@@ -122,16 +122,16 @@
         }
 
         add() {
-            let g1 = g();
+            let g1 = LSVG.g();
 
-            let r1 = rect(this.cx - 1, this.cy - this.s / 2, 2, this.s, '#eee');
+            let r1 = LSVG.rect(this.cx - 1, this.cy - this.s / 2, 2, this.s, '#eee');
             g1.appendChild(r1);
 
-            let r2 = rect(this.cx - 1, 0, 2, 0, this.c);
+            let r2 = LSVG.rect(this.cx - 1, 0, 2, 0, this.c);
             g1.appendChild(r2);
             this.mod.push(r2);
 
-            let c1 = circle(this.cx, 0, 5, '#fff');
+            let c1 = LSVG.circle(this.cx, 0, 5, '#fff');
             c1.style.stroke = this.c;
             c1.style.strokeWidth = 2;
             g1.appendChild(c1);
@@ -181,9 +181,9 @@
         }
 
         add() {
-            let g1 = g();
+            let g1 = LSVG.g();
 
-            let c1 = circle(this.cx, this.cy, this.s / 2, '#fff');
+            let c1 = LSVG.circle(this.cx, this.cy, this.s / 2, '#fff');
             c1.style.strokeWidth = 2;
             g1.appendChild(c1);
             this.mod.push(c1);
@@ -234,9 +234,9 @@
         }
 
         add() {
-            let g1 = g();
+            let g1 = LSVG.g();
 
-            let r1 = rect(this.cx - this.s / 2, this.cy - this.s / 2, this.s, this.s, '#fff');
+            let r1 = LSVG.rect(this.cx - this.s / 2, this.cy - this.s / 2, this.s, this.s, '#fff');
             r1.style.stroke = this.c;
             r1.style.strokeWidth = 2;
             r1.style.rx = 4;
@@ -262,9 +262,9 @@
         }
 
         add() {
-            let g1 = g();
+            let g1 = LSVG.g();
 
-            let t1 = text(this.cx, this.cy, this.s, this.v, this.c);
+            let t1 = LSVG.text(this.cx, this.cy, this.s, this.v, this.c);
             g1.appendChild(t1);
             this.mod.push(t1);
 
@@ -290,13 +290,13 @@
         }
 
         add() {
-            let g1 = g();
+            let g1 = LSVG.g();
 
-            let r1 = rect(this.cx - this.s[0] / 2, this.cy - this.s[1] / 2, this.s[0], this.s[1], '#ddd');
+            let r1 = LSVG.rect(this.cx - this.s[0] / 2, this.cy - this.s[1] / 2, this.s[0], this.s[1], '#ddd');
             r1.style.stroke = '#ccc';
             g1.appendChild(r1);
 
-            let arc = document.createElementNS(url, 'path');
+            let arc = document.createElementNS(LSVG.url, 'path');
             arc.style.stroke = this.c;
             arc.style.strokeWidth = 2;
             arc.style.fillOpacity = 0;
@@ -321,9 +321,9 @@
         }
 
         add() {
-            let g1 = document.createElementNS(url, 'g');
+            let g1 = document.createElementNS(LSVG.url, 'g');
 
-            let r1 = document.createElementNS(url, 'rect');
+            let r1 = document.createElementNS(LSVG.url, 'rect');
             r1.style.x = this.x1;
             r1.style.y = this.y1;
             r1.style.width = this.x2 - this.x1;
@@ -332,7 +332,7 @@
             r1.style.fillOpacity = 0;
             g1.appendChild(r1);
 
-            let t1 = document.createElementNS(url, 'text');
+            let t1 = document.createElementNS(LSVG.url, 'text');
             t1.setAttribute('x', this.x1 + 5);
             t1.setAttribute('y', this.y1 + 20);
             t1.style.fill = '#666';
