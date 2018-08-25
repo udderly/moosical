@@ -2,10 +2,14 @@ class Window {
     constructor(s, params) {
         this.svg = s;
         this.params = params;
+        
         this.params.x = this.params.x || 0;
         this.params.y = this.params.y || 0;
         this.params.width = this.params.width || 500;
         this.params.height = this.params.height || 500;
+        
+        this.params.minWidth = this.params.minWidth || 100;
+        this.params.minHeight = this.params.minHeight || 100;
         
         this.sx;
         this.sy;
@@ -38,7 +42,6 @@ class Window {
     
     build() {
         let self = this;
-        
         let e = this.elements;
         
         e.container = LSVG.g();
@@ -62,16 +65,31 @@ class Window {
             self.oy = self.params.y;
 
             let f = function(ev) {
-                self.params.x = ev.clientX - self.sx + self.ox;
-                self.params.y = ev.clientY - self.sy + self.oy;
+                self.params.x = self.bounds(ev.clientX - self.sx + self.ox, 0, document.body.clientWidth - self.params.width);
+                self.params.y = self.bounds(ev.clientY - self.sy + self.oy, 0, document.body.clientHeight - self.params.height);
                 self.update();
             };
+                
+            f(event);
             
             document.addEventListener('mousemove', f);
             document.addEventListener('mouseup', function() {
                 document.removeEventListener('mousemove', f);
             }, {once: true});
         };
+        
+        this.prepareResize();
+        
+        this.update();
+    }
+    
+    bounds(x, a, b) {
+        return Math.min(Math.max(x, a), b);
+    }
+    
+    prepareResize() {
+        let self = this;
+        let e = this.elements;
         
         e.resize = {};
         
@@ -86,16 +104,22 @@ class Window {
             self.oh = self.params.height;
 
             let f = function(ev) {
-                self.params.y = ev.clientY - self.sy + self.oy;
-                self.params.height = self.sy - ev.clientY + self.oh;
+                if (self.params.y > 0) {
+                    self.params.y = ev.clientY - self.sy + self.oy;
+                    self.params.height = self.sy - ev.clientY + self.oh;
+                } else {
+                    self.params.y = 0;
+                }
                 self.update();
             };
+                
+            f(event);
             
             document.addEventListener('mousemove', f);
             document.addEventListener('mouseup', function() {
                 document.removeEventListener('mousemove', f);
             }, {once: true});
-        }
+        };
         
         e.resize.e = LSVG.rect(0, 5, 10, 0, '');
         e.resize.e.style.fillOpacity = 0;
@@ -111,12 +135,14 @@ class Window {
                 self.params.width = ev.clientX - self.sx + self.ow;
                 self.update();
             };
+                
+            f(event);
             
             document.addEventListener('mousemove', f);
             document.addEventListener('mouseup', function() {
                 document.removeEventListener('mousemove', f);
             }, {once: true});
-        }
+        };
         
         e.resize.s = LSVG.rect(5, 0, 0, 10, '');
         e.resize.s.style.fillOpacity = 0;
@@ -132,12 +158,14 @@ class Window {
                 self.params.height = ev.clientY - self.sy + self.oh;
                 self.update();
             };
+                
+            f(event);
             
             document.addEventListener('mousemove', f);
             document.addEventListener('mouseup', function() {
                 document.removeEventListener('mousemove', f);
             }, {once: true});
-        }
+        };
         
         e.resize.w = LSVG.rect(-5, 5, 10, 0, '');
         e.resize.w.style.fillOpacity = 0;
@@ -154,13 +182,13 @@ class Window {
                 self.params.width = self.sx - ev.clientX + self.ow;
                 self.update();
             };
+                
+            f(event);
             
             document.addEventListener('mousemove', f);
             document.addEventListener('mouseup', function() {
                 document.removeEventListener('mousemove', f);
             }, {once: true});
-        }
-        
-        this.update();
+        };
     }
 }
