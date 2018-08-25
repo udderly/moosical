@@ -200,7 +200,7 @@ function playDDD() {
     let time_context = new TONES.TimeContext(140, TONES.Context.currentTime + 0.3);
     note_group.schedule(instrument, time_context);
 }
-
+/*
 let svg = new TONES.SVGContext("bar");
 
 let bar = new TONES.SVGLevelVisualizer(svg, {
@@ -221,7 +221,7 @@ TONES.masterEntryNode.connect(bar.entry);
 setTimeout(() => {
     bar.start();
 }, 1000);
-
+*/
 
 let downsampler = new TONES.Downsampler();
 

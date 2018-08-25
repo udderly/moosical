@@ -62,7 +62,10 @@
         add() {
             let g1 = LSVG.g();
 
-            let c1 = LSVG.circle(this.cx, this.cy, this.s / 2, '#eee');
+            let c1 = LSVG.circle(this.cx, this.cy, this.s / 2 - 2.5, '');
+            c1.style.stroke = '#eee';
+            c1.style.strokeWidth = 5;
+            c1.style.fillOpacity = 0;
             g1.appendChild(c1);
 
             let c3 = LSVG.circle(this.cx, this.cy, this.s / 2, this.c);
@@ -74,7 +77,7 @@
             g1.appendChild(arc);
             this.mod.push(arc);
 
-            let c2 = LSVG.circle(this.cx, this.cy, this.s / 2 - 2, '#fff');
+            let c2 = LSVG.circle(this.cx, this.cy, this.s / 2 - 5, '#fff');
             g1.appendChild(c2);
 
             let r1 = LSVG.rect(this.cx - 1, this.cy + this.s / 4, 2, this.s / 4, this.c);
@@ -87,18 +90,20 @@
                 self.sy = event.clientY;
                 self.old = self.v;
 
-                document.onmousemove = function(event) {
-                    let result = 1000 * (self.sy - event.clientY) / (self.parent.clientWidth * self.s) / 4 + self.old;
+                let f = function(ev) {
+                    let result = 750 * (self.sy - ev.clientY) / (self.parent.clientWidth * self.s) / 4 + self.old;
 
                     result = result < 0 ? 0 : result > 1 ? 1 : result;
                     self.v = result;
                     self.update();
                 };
+                
+                f(event);
 
-                document.onmouseup = function() {
-                    document.onmousemove = null;
-                    document.onmouseup = null;
-                };
+                document.addEventListener('mousemove', f);
+                document.addEventListener('mouseup', function() {
+                    document.removeEventListener('mousemove', f);
+                }, {once: true});
             };
             this.svg.appendChild(g1);
 
@@ -114,7 +119,6 @@
         update() {
             this.mod[0].style.y = this.cy + this.s / 2 - this.v * this.s;
             this.mod[0].style.height = this.v * this.s;
-            this.mod[1].style.cy = this.cy + this.s / 2 - this.v * this.s;
 
             this.change();
         }
@@ -122,18 +126,12 @@
         add() {
             let g1 = LSVG.g();
 
-            let r1 = LSVG.rect(this.cx - 1, this.cy - this.s / 2, 2, this.s, '#eee');
+            let r1 = LSVG.rect(this.cx - 5, this.cy - this.s / 2, 10, this.s, '#eee');
             g1.appendChild(r1);
 
-            let r2 = LSVG.rect(this.cx - 1, 0, 2, 0, this.c);
+            let r2 = LSVG.rect(this.cx - 5, 0, 10, 0, this.c);
             g1.appendChild(r2);
             this.mod.push(r2);
-
-            let c1 = LSVG.circle(this.cx, 0, 5, '#fff');
-            c1.style.stroke = this.c;
-            c1.style.strokeWidth = 2;
-            g1.appendChild(c1);
-            this.mod.push(c1);
 
             let self = this;
             g1.onmousedown = function(event) {
@@ -141,18 +139,21 @@
                 self.sy = event.clientY;
                 self.old = self.v;
 
-                document.onmousemove = function(event) {
-                    let result = 1000 * (self.sy - event.clientY) / (self.parent.clientWidth * self.s) + self.old;
+                let f = function(ev) {
+                    let bcr = self.parent.getBoundingClientRect();
+                    let result = (self.cy + self.s / 2 - 500 * (ev.clientY - bcr.top) / self.parent.clientHeight) / self.s;
 
                     result = result < 0 ? 0 : result > 1 ? 1 : result;
                     self.v = result;
                     self.update();
                 };
+                
+                f(event);
 
-                document.onmouseup = function() {
-                    document.onmousemove = null;
-                    document.onmouseup = null;
-                };
+                document.addEventListener('mousemove', f);
+                document.addEventListener('mouseup', function() {
+                    document.removeEventListener('mousemove', f);
+                }, {once: true});
             };
             this.svg.appendChild(g1);
 
@@ -232,11 +233,8 @@
         add() {
             let g1 = LSVG.g();
 
-            let r1 = LSVG.rect(this.cx - this.s / 2, this.cy - this.s / 2, this.s, this.s, '#fff');
-            r1.style.stroke = this.c;
-            r1.style.strokeWidth = 2;
-            r1.style.rx = 4;
-            g1.appendChild(r1);
+            let c1 = LSVG.circle(this.cx, this.cy, this.s / 2, this.c);
+            g1.appendChild(c1);
 
             let self = this;
             g1.onmousedown = function() {

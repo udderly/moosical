@@ -18,23 +18,23 @@ class Synth {
         l.pan = {};
         l.lev = {};
 
-        l.uni.k = new LACTOSE.Knob(60 + x, 115 + y, 25, 0.6, '#096', c);
+        l.uni.k = new LACTOSE.Knob(50 + x, 115 + y, 50, 0.6, '#0c9', c);
         l.uni.t = new LACTOSE.Text(80 + x, 120 + y, 'start', 'Vcs', '#333', c);
-        l.uni.i = new LACTOSE.Text(40 + x, 120 + y, 'end', '10', '#096', c);
+        l.uni.i = new LACTOSE.Text(50 + x, 120 + y, 'middle', '10', '#096', c);
 
-        l.det.k = new LACTOSE.Knob(60 + x, 165 + y, 25, 0.3, '#096', c);
+        l.det.k = new LACTOSE.Knob(60 + x, 165 + y, 25, 0.3, '#0c9', c);
         l.det.t = new LACTOSE.Text(80 + x, 170 + y, 'start', 'Det', '#333', c);
         l.det.i = new LACTOSE.Text(40 + x, 170 + y, 'end', '60', '#096', c);
 
-        l.ble.k = new LACTOSE.Knob(60 + x, 215 + y, 25, 0.3, '#096', c);
+        l.ble.k = new LACTOSE.Knob(60 + x, 215 + y, 25, 0.3, '#0c9', c);
         l.ble.t = new LACTOSE.Text(80 + x, 220 + y, 'start', 'Bld', '#333', c);
         l.ble.i = new LACTOSE.Text(40 + x, 220 + y, 'end', '30', '#096', c);
 
-        l.pan.k = new LACTOSE.Knob(160 + x, 115 + y, 25, 0.6, '#c90', c);
+        l.pan.k = new LACTOSE.Knob(160 + x, 115 + y, 25, 0.6, '#fc0', c);
         l.pan.t = new LACTOSE.Text(140 + x, 120 + y, 'end', 'Pan', '#333', c);
         l.pan.i = new LACTOSE.Text(180 + x, 120 + y, 'start', '10', '#c90', c);
 
-        l.lev.k = new LACTOSE.Knob(160 + x, 165 + y, 25, 0.6, '#c90', c);
+        l.lev.k = new LACTOSE.Knob(160 + x, 165 + y, 25, 0.6, '#fc0', c);
         l.lev.t = new LACTOSE.Text(140 + x, 170 + y, 'end', 'Lev', '#333', c);
         l.lev.i = new LACTOSE.Text(180 + x, 170 + y, 'start', '10', '#c90', c);
     }
@@ -71,19 +71,19 @@ class Synth {
 
         env.g = new LACTOSE.Group(210, 260, 410, 460, 'Envelope', container);
 
-        env.att.s = new LACTOSE.Slider(250, 365, 100, 0.1, '#069', container);
+        env.att.s = new LACTOSE.Slider(250, 365, 100, 0.1, '#09c', container);
         env.att.t = new LACTOSE.Text(250, 440, 'middle', 'A', '#333', container);
         env.att.i = new LACTOSE.Text(250, 305, 'middle', '9', '#333', container);
 
-        env.dec.s = new LACTOSE.Slider(290, 365, 100, 0.8, '#069', container);
+        env.dec.s = new LACTOSE.Slider(290, 365, 100, 0.8, '#09c', container);
         env.dec.t = new LACTOSE.Text(290, 440, 'middle', 'D', '#333', container);
         env.dec.i = new LACTOSE.Text(290, 305, 'middle', '165', '#333', container);
 
-        env.sus.s = new LACTOSE.Slider(330, 365, 100, 0.6, '#069', container);
+        env.sus.s = new LACTOSE.Slider(330, 365, 100, 0.6, '#09c', container);
         env.sus.t = new LACTOSE.Text(330, 440, 'middle', 'S', '#333', container);
         env.sus.i = new LACTOSE.Text(330, 305, 'middle', '60', '#333', container);
 
-        env.rel.s = new LACTOSE.Slider(370, 365, 100, 0.2, '#069', container);
+        env.rel.s = new LACTOSE.Slider(370, 365, 100, 0.2, '#09c', container);
         env.rel.t = new LACTOSE.Text(370, 440, 'middle', 'R', '#333', container);
         env.rel.i = new LACTOSE.Text(370, 305, 'middle', '27', '#333', container);
 
@@ -110,7 +110,7 @@ class Synth {
 
         scl.fil = {};
         
-        scl.fil.o = new LACTOSE.Open(20, 480, 20, '#903', container);
+        scl.fil.o = new LACTOSE.Open(20, 480, 20, '#f03', container);
         scl.fil.t = new LACTOSE.Text(40, 485, 'left', 'LOAD .SCL', '#333', container);
 
         /*let resk = new LACTOSE.Knob(650, 100, 50, 0.6, '#c90', this.svg);
