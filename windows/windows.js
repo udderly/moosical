@@ -28,6 +28,7 @@ class Window {
         e.body.style.width = this.params.width;
         e.body.style.height = this.params.height;
         e.nav.style.width = this.params.width;
+        e.no.style.width = this.params.width;
         
         e.resize.n.style.width = this.params.width - 10;
         
@@ -48,9 +49,13 @@ class Window {
         this.svg.appendChild(e.container);
         
         e.body = LSVG.rect(0, 0, 0, 0, '#fff');
-        e.body.style.stroke = "#069";
-        e.body.style.rx = 5;
+        e.body.style.stroke = "#ccc";
         e.container.appendChild(e.body);
+        
+        e.no = LSVG.rect(0, 0, 0, 25, '');
+        e.no.style.fillOpacity = 0;
+        e.no.style.stroke = "#069";
+        e.container.appendChild(e.no);
         
         e.nav = LSVG.foreignObject(0, 0, 0, 25);
         e.nav.id = 'windowTop';

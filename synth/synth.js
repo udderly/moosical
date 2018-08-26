@@ -43,7 +43,7 @@ class Synth {
         let container = LSVG.g();
         
         let frame = LSVG.g();
-        let r1 = LSVG.rect(0, 49, 750, 1, '#ccc');
+        /*let r1 = LSVG.rect(0, 49, 750, 1, '#ccc');
         let r2 = LSVG.rect(0, 0, 750, 500, '#000');
         r2.style.fillOpacity = 0;
         r2.style.stroke = '#333';
@@ -52,7 +52,7 @@ class Synth {
         t1.classList.add('title');
         frame.appendChild(r1);
         frame.appendChild(r2);
-        frame.appendChild(t1);
+        frame.appendChild(t1);*/
         
         this.svg.appendChild(frame);
         this.svg.appendChild(container);
