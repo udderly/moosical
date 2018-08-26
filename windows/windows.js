@@ -109,11 +109,17 @@ class Window {
             self.oh = self.params.height;
 
             let f = function(ev) {
-                if (self.params.y > 0) {
-                    self.params.y = ev.clientY - self.sy + self.oy;
-                    self.params.height = self.sy - ev.clientY + self.oh;
+                if (ev.clientY + 50 < self.params.y + self.params.height) {
+                    if (ev.clientY > 0) {
+                        self.params.y = ev.clientY - self.sy + self.oy;
+                        self.params.height = self.sy - ev.clientY + self.oh;
+                    } else {
+                        self.params.y = 0;
+                        self.params.height = self.oh + self.oy;
+                    }
                 } else {
-                    self.params.y = 0;
+                    self.params.y = self.oy + self.oh - 50;
+                    self.params.height = 50;
                 }
                 self.update();
             };
@@ -131,13 +137,20 @@ class Window {
         e.resize.e.style.cursor = 'e-resize';
         e.container.appendChild(e.resize.e);
         
-        
         e.resize.e.onmousedown = function(event) {
             self.sx = event.clientX;
             self.ow = self.params.width;
 
             let f = function(ev) {
-                self.params.width = ev.clientX - self.sx + self.ow;
+                if (ev.clientX - 200 > self.params.x) {
+                    if (ev.clientX < document.body.clientWidth) {
+                        self.params.width = ev.clientX - self.sx + self.ow;
+                    } else {
+                        self.params.width = document.body.clientWidth - self.params.x;
+                    }
+                } else {
+                    self.params.width = 200;
+                }
                 self.update();
             };
                 
@@ -154,13 +167,20 @@ class Window {
         e.resize.s.style.cursor = 's-resize';
         e.container.appendChild(e.resize.s);
         
-        
         e.resize.s.onmousedown = function(event) {
             self.sy = event.clientY;
             self.oh = self.params.height;
 
             let f = function(ev) {
-                self.params.height = ev.clientY - self.sy + self.oh;
+                if (ev.clientY - 50 > self.params.y) {
+                    if (ev.clientY < document.body.clientHeight) {
+                        self.params.height = ev.clientY - self.sy + self.oh;
+                    } else {
+                        self.params.height = document.body.clientHeight - self.params.y;
+                    }
+                } else {
+                    self.params.height = 50;
+                }
                 self.update();
             };
                 
@@ -183,8 +203,18 @@ class Window {
             self.ow = self.params.width;
 
             let f = function(ev) {
-                self.params.x = ev.clientX - self.sx + self.ox;
-                self.params.width = self.sx - ev.clientX + self.ow;
+                if (ev.clientX + 200 < self.params.x + self.params.width) {
+                    if (ev.clientX > 0) {
+                        self.params.x = ev.clientX - self.sx + self.ox;
+                        self.params.width = self.sx - ev.clientX + self.ow;
+                    } else {
+                        self.params.x = 0;
+                        self.params.width = self.ow + self.ox;
+                    }
+                } else {
+                    self.params.x = self.ox + self.ow - 200;
+                    self.params.width = 200;
+                }
                 self.update();
             };
                 
