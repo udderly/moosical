@@ -93,6 +93,64 @@ class Window {
     }
     
     prepareResize() {
+        let rn = function(ev) {
+            if (ev.clientY + 50 < self.params.y + self.params.height) {
+                if (ev.clientY > 0) {
+                    self.params.y = ev.clientY - self.sy + self.oy;
+                    self.params.height = self.sy - ev.clientY + self.oh;
+                } else {
+                    self.params.y = 0;
+                    self.params.height = self.oh + self.oy;
+                }
+            } else {
+                self.params.y = self.oy + self.oh - 50;
+                self.params.height = 50;
+            }
+            self.update();
+        };
+
+        let re = function(ev) {
+            if (ev.clientX - 200 > self.params.x) {
+                if (ev.clientX < document.body.clientWidth) {
+                    self.params.width = ev.clientX - self.sx + self.ow;
+                } else {
+                    self.params.width = document.body.clientWidth - self.params.x;
+                }
+            } else {
+                self.params.width = 200;
+            }
+            self.update();
+        };
+
+        let rs = function(ev) {
+            if (ev.clientY - 50 > self.params.y) {
+                if (ev.clientY < document.body.clientHeight) {
+                    self.params.height = ev.clientY - self.sy + self.oh;
+                } else {
+                    self.params.height = document.body.clientHeight - self.params.y;
+                }
+            } else {
+                self.params.height = 50;
+            }
+            self.update();
+        };
+
+        let rw = function(ev) {
+            if (ev.clientX + 200 < self.params.x + self.params.width) {
+                if (ev.clientX > 0) {
+                    self.params.x = ev.clientX - self.sx + self.ox;
+                    self.params.width = self.sx - ev.clientX + self.ow;
+                } else {
+                    self.params.x = 0;
+                    self.params.width = self.ow + self.ox;
+                }
+            } else {
+                self.params.x = self.ox + self.ow - 200;
+                self.params.width = 200;
+            }
+            self.update();
+        };
+        
         let self = this;
         let e = this.elements;
         
@@ -100,129 +158,71 @@ class Window {
         
         e.resize.n = LSVG.rect(5, -5, 0, 10, '');
         e.resize.n.style.fillOpacity = 0;
-        e.resize.n.style.cursor = 'n-resize';
+        e.resize.n.style.cursor = 'ns-resize';
         e.container.appendChild(e.resize.n);
         
         e.resize.n.onmousedown = function(event) {
             self.sy = event.clientY;
             self.oy = self.params.y;
             self.oh = self.params.height;
-
-            let f = function(ev) {
-                if (ev.clientY + 50 < self.params.y + self.params.height) {
-                    if (ev.clientY > 0) {
-                        self.params.y = ev.clientY - self.sy + self.oy;
-                        self.params.height = self.sy - ev.clientY + self.oh;
-                    } else {
-                        self.params.y = 0;
-                        self.params.height = self.oh + self.oy;
-                    }
-                } else {
-                    self.params.y = self.oy + self.oh - 50;
-                    self.params.height = 50;
-                }
-                self.update();
-            };
                 
-            f(event);
+            rn(event);
             
-            document.addEventListener('mousemove', f);
+            document.addEventListener('mousemove', rn);
             document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', f);
+                document.removeEventListener('mousemove', rn);
             }, {once: true});
         };
         
         e.resize.e = LSVG.rect(0, 5, 10, 0, '');
         e.resize.e.style.fillOpacity = 0;
-        e.resize.e.style.cursor = 'e-resize';
+        e.resize.e.style.cursor = 'ew-resize';
         e.container.appendChild(e.resize.e);
         
         e.resize.e.onmousedown = function(event) {
             self.sx = event.clientX;
             self.ow = self.params.width;
-
-            let f = function(ev) {
-                if (ev.clientX - 200 > self.params.x) {
-                    if (ev.clientX < document.body.clientWidth) {
-                        self.params.width = ev.clientX - self.sx + self.ow;
-                    } else {
-                        self.params.width = document.body.clientWidth - self.params.x;
-                    }
-                } else {
-                    self.params.width = 200;
-                }
-                self.update();
-            };
                 
-            f(event);
+            re(event);
             
-            document.addEventListener('mousemove', f);
+            document.addEventListener('mousemove', re);
             document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', f);
+                document.removeEventListener('mousemove', re);
             }, {once: true});
         };
         
         e.resize.s = LSVG.rect(5, 0, 0, 10, '');
         e.resize.s.style.fillOpacity = 0;
-        e.resize.s.style.cursor = 's-resize';
+        e.resize.s.style.cursor = 'ns-resize';
         e.container.appendChild(e.resize.s);
         
         e.resize.s.onmousedown = function(event) {
             self.sy = event.clientY;
             self.oh = self.params.height;
-
-            let f = function(ev) {
-                if (ev.clientY - 50 > self.params.y) {
-                    if (ev.clientY < document.body.clientHeight) {
-                        self.params.height = ev.clientY - self.sy + self.oh;
-                    } else {
-                        self.params.height = document.body.clientHeight - self.params.y;
-                    }
-                } else {
-                    self.params.height = 50;
-                }
-                self.update();
-            };
                 
-            f(event);
+            rs(event);
             
-            document.addEventListener('mousemove', f);
+            document.addEventListener('mousemove', rs);
             document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', f);
+                document.removeEventListener('mousemove', rs);
             }, {once: true});
         };
         
         e.resize.w = LSVG.rect(-5, 5, 10, 0, '');
         e.resize.w.style.fillOpacity = 0;
-        e.resize.w.style.cursor = 'w-resize';
+        e.resize.w.style.cursor = 'ew-resize';
         e.container.appendChild(e.resize.w);
         
         e.resize.w.onmousedown = function(event) {
             self.sx = event.clientX;
             self.ox = self.params.x;
             self.ow = self.params.width;
-
-            let f = function(ev) {
-                if (ev.clientX + 200 < self.params.x + self.params.width) {
-                    if (ev.clientX > 0) {
-                        self.params.x = ev.clientX - self.sx + self.ox;
-                        self.params.width = self.sx - ev.clientX + self.ow;
-                    } else {
-                        self.params.x = 0;
-                        self.params.width = self.ow + self.ox;
-                    }
-                } else {
-                    self.params.x = self.ox + self.ow - 200;
-                    self.params.width = 200;
-                }
-                self.update();
-            };
                 
-            f(event);
+            rw(event);
             
-            document.addEventListener('mousemove', f);
+            document.addEventListener('mousemove', rw);
             document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', f);
+                document.removeEventListener('mousemove', rw);
             }, {once: true});
         };
     }
