@@ -39,6 +39,13 @@ class Window {
         e.resize.s.style.width = this.params.width - 10;
         
         e.resize.w.style.height = this.params.height - 10;
+        
+        e.resize.ne.style.x = this.params.width - 5;
+        
+        e.resize.se.style.x = this.params.width - 5;
+        e.resize.se.style.y = this.params.height - 5;
+        
+        e.resize.sw.style.y = this.params.height - 5;
     }
     
     build() {
@@ -151,6 +158,28 @@ class Window {
             self.update();
         };
         
+        let trigger = function(...args) {
+            console.log(event);
+            self.sx = event.clientX;
+            self.ox = self.params.x;
+            self.ow = self.params.width;
+            
+            self.sy = event.clientY;
+            self.oy = self.params.y;
+            self.oh = self.params.height;
+            
+            args.forEach(function(func) {
+                func(event);
+                document.addEventListener('mousemove', func);
+            });
+            
+            document.addEventListener('mouseup', function() {
+                args.forEach(function(func) {
+                    document.removeEventListener('mousemove', func);
+                });
+            }, {once: true});
+        };
+        
         let self = this;
         let e = this.elements;
         
@@ -161,69 +190,48 @@ class Window {
         e.resize.n.style.cursor = 'ns-resize';
         e.container.appendChild(e.resize.n);
         
-        e.resize.n.onmousedown = function(event) {
-            self.sy = event.clientY;
-            self.oy = self.params.y;
-            self.oh = self.params.height;
-                
-            rn(event);
-            
-            document.addEventListener('mousemove', rn);
-            document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', rn);
-            }, {once: true});
-        };
-        
         e.resize.e = LSVG.rect(0, 5, 10, 0, '');
         e.resize.e.style.fillOpacity = 0;
         e.resize.e.style.cursor = 'ew-resize';
         e.container.appendChild(e.resize.e);
-        
-        e.resize.e.onmousedown = function(event) {
-            self.sx = event.clientX;
-            self.ow = self.params.width;
-                
-            re(event);
-            
-            document.addEventListener('mousemove', re);
-            document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', re);
-            }, {once: true});
-        };
         
         e.resize.s = LSVG.rect(5, 0, 0, 10, '');
         e.resize.s.style.fillOpacity = 0;
         e.resize.s.style.cursor = 'ns-resize';
         e.container.appendChild(e.resize.s);
         
-        e.resize.s.onmousedown = function(event) {
-            self.sy = event.clientY;
-            self.oh = self.params.height;
-                
-            rs(event);
-            
-            document.addEventListener('mousemove', rs);
-            document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', rs);
-            }, {once: true});
-        };
-        
         e.resize.w = LSVG.rect(-5, 5, 10, 0, '');
         e.resize.w.style.fillOpacity = 0;
         e.resize.w.style.cursor = 'ew-resize';
         e.container.appendChild(e.resize.w);
         
-        e.resize.w.onmousedown = function(event) {
-            self.sx = event.clientX;
-            self.ox = self.params.x;
-            self.ow = self.params.width;
-                
-            rw(event);
-            
-            document.addEventListener('mousemove', rw);
-            document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', rw);
-            }, {once: true});
-        };
+        e.resize.ne = LSVG.rect(0, -5, 10, 10, '');
+        e.resize.ne.style.fillOpacity = 0;
+        e.resize.ne.style.cursor = 'nesw-resize';
+        e.container.appendChild(e.resize.ne);
+        
+        e.resize.se = LSVG.rect(0, 0, 10, 10, '');
+        e.resize.se.style.fillOpacity = 0;
+        e.resize.se.style.cursor = 'nwse-resize';
+        e.container.appendChild(e.resize.se);
+        
+        e.resize.sw = LSVG.rect(-5, 0, 10, 10, '');
+        e.resize.sw.style.fillOpacity = 0;
+        e.resize.sw.style.cursor = 'nesw-resize';
+        e.container.appendChild(e.resize.sw);
+        
+        e.resize.nw = LSVG.rect(-5, -5, 10, 10, '');
+        e.resize.nw.style.fillOpacity = 0;
+        e.resize.nw.style.cursor = 'nwse-resize';
+        e.container.appendChild(e.resize.nw);
+        
+        e.resize.n.onmousedown = function() { trigger(rn); };
+        e.resize.e.onmousedown = function() { trigger(re); };
+        e.resize.s.onmousedown = function() { trigger(rs); };
+        e.resize.w.onmousedown = function() { trigger(rw); };
+        e.resize.ne.onmousedown = function() { trigger(rn, re); };
+        e.resize.se.onmousedown = function() { trigger(rs, re); };
+        e.resize.sw.onmousedown = function() { trigger(rs, rw); };
+        e.resize.nw.onmousedown = function() { trigger(rn, rw); };
     }
 }
