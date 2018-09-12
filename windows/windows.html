@@ -8,14 +8,13 @@
         
         <style>
             @import url('https://fonts.googleapis.com/css?family=Abel');
-            @import url('https://fonts.googleapis.com/css?family=Material+Icons');
             body,
             html {
                 height: 100%;
                 margin: 0;
                 overflow: hidden;
             }
-            svg {
+            #svg {
                 height: 100%;
                 width: 100%;
             }
@@ -34,20 +33,14 @@
                 display: flex;
                 height: 100%;
             }
-            #windowTop .all div {
-                align-items: center;
-                display: flex;
-                margin-right: 5px;
-            }
             #windowTop p {
                 color: #fff;
                 flex-grow: 1;
                 font-family: Abel;
                 margin: 0 0 0 5px;
             }
-            #windowTop .material-icons {
-                color: #fff;
-                font-size: 18px;
+            #windowTop svg {
+                margin-right: 10px;
             }
         </style>
         
@@ -59,11 +52,10 @@
             <div id="windowTop">
                 <div class="all">
                     <p>Synth</p>
-                    <div>
-                        <i class="material-icons">remove</i>
-                        <i class="material-icons">add</i>
-                        <i class="material-icons">clear</i>
-                    </div>
+                    <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0" y1="0" x2="10" y2="10" stroke="#fff"></line>
+                        <line x1="10" y1="0" x2="0" y2="10" stroke="#fff"></line>
+                    </svg>
                 </div>
             </div>
         </div>
