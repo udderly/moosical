@@ -5,16 +5,16 @@
         define(['exports'], factory) :
     (factory((global.LACTOSE = global.LACTOSE || {})));
 } (this, (function (exports) {
-    
+
     'use strict';
 
     class Widget {
-        constructor(cx, cy, s, v, c, svg) {
-            this.cx = cx;
-            this.cy = cy;
-            this.s = s;
-            this.v = v;
-            this.c = c;
+        constructor(svg, args) {
+            this.cx = args.pos[0] || 0;
+            this.cy = args.pos[1] || 0;
+            this.s = args.size || args.align || 10;
+            this.v = args.value || 0;
+            this.c = args.color || '#000';
             this.svg = svg;
             this.parent = svg;
             while (this.parent.tagName !== 'svg') {
@@ -37,8 +37,8 @@
     }
 
     class Knob extends Widget {
-        constructor(cx, cy, s, v, c, svg) {
-            super(cx, cy, s, v, c, svg);
+        constructor(svg, args) {
+            super(svg, args);
         }
 
         update() {
@@ -47,7 +47,7 @@
                 x: this.s * Math.cos(angle) / 2,
                 y: this.s * Math.sin(angle) / 2
             };
-            
+
             this.mod[0].style.opacity = this.v === 1 ? 1 : 0;
 
             this.mod[1].setAttribute('d', 'M ' + (this.cx + d.x) + ' ' + (this.cy + d.y) +
@@ -97,7 +97,7 @@
                     self.v = result;
                     self.update();
                 };
-                
+
                 f(event);
 
                 document.addEventListener('mousemove', f);
@@ -112,8 +112,8 @@
     }
 
     class Slider extends Widget {
-        constructor(cx, cy, s, v, c, svg) {
-            super(cx, cy, s, v, c, svg);
+        constructor(svg, args) {
+            super(svg, args);
         }
 
         update() {
@@ -147,7 +147,7 @@
                     self.v = result;
                     self.update();
                 };
-                
+
                 f(event);
 
                 document.addEventListener('mousemove', f);
@@ -162,8 +162,8 @@
     }
 
     class Button extends Widget {
-        constructor(cx, cy, s, v, c, svg) {
-            super(cx, cy, s, v, c, svg);
+        constructor(svg, args) {
+            super(svg, args);
             this.radio = null;
         }
 
@@ -217,8 +217,8 @@
     }
 
     class Open extends Widget {
-        constructor(cx, cy, s, c, svg) {
-            super(cx, cy, s, 0, c, svg);
+        constructor(svg, args) {
+            super(svg, args);
 
             this.dialog = document.createElement('input');
             this.dialog.setAttribute('type', 'file');
@@ -247,8 +247,8 @@
     }
 
     class Text extends Widget {
-        constructor(cx, cy, s, v, c, svg) {
-            super(cx, cy, s, v, c, svg);
+        constructor(svg, args) {
+            super(svg, args);
         }
 
         update() {
@@ -267,8 +267,8 @@
     }
 
     class Graph extends Widget {
-        constructor(cx, cy, s, v, c, svg) {
-            super(cx, cy, s, v, c, svg);
+        constructor(svg, args) {
+            super(svg, args);
         }
 
         update() {
@@ -336,7 +336,7 @@
             this.svg.appendChild(g1);
         }
     }
-    
+
     exports.Knob = Knob;
     exports.Slider = Slider;
     exports.Button = Button;
@@ -345,5 +345,5 @@
     exports.Text = Text;
     exports.Graph = Graph;
     exports.Group = Group;
-    
+
 })));
