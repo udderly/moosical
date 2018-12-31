@@ -10,8 +10,8 @@
 
     class Widget {
         constructor(svg, args) {
-            this.cx = args.pos[0] || 0;
-            this.cy = args.pos[1] || 0;
+            this.cx = args.pos ? args.pos[0] : 0;
+            this.cy = args.pos ? args.pos[1] : 0;
             this.s = args.size || args.align || 10;
             this.v = args.value || 0;
             this.c = args.color || '#000';
