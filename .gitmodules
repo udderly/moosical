@@ -1,0 +1,3 @@
+[submodule "external/tones"]
+	path = external/tones
+	url = https://github.com/anematode/tones-remake
